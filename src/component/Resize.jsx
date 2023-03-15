@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import './Global.css'
 
 const Resize = () => {
   const canvasRef = useRef(null)
@@ -18,11 +19,35 @@ const Resize = () => {
     const mesh = new THREE.Mesh(geometry, material)
     scene.add(mesh)
 
+
+
     // Sizes
     const sizes = {
-      width: 800,
-      height: 600,
+      width: window.innerWidth,
+      height: window.innerHeight,
     }
+
+    window.addEventListener('resize', () => {
+      sizes.width = window.innerWidth
+      sizes.height = window.innerHeight
+
+      // update camera
+      camera.aspect = sizes.width / sizes.height
+      camera.updateProjectionMatrix()
+
+      // update renderer
+      renderer.setSize(sizes.width, sizes.height)
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+    })
+
+    // toggle full-screen
+    window.addEventListener('dblclick', () => {
+      if(!document.fullscreenElement) {
+        canvas.requestFullscreen()
+      } else {
+        document.exitFullscreen()
+      }
+    })
 
     // Camera
     // Base camera
